@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +42,8 @@ public class EntitlementsController {
     public ResponseEntity<?> greeting(@RequestParam(value="userId") String userId, @RequestParam(value="q", required=false) String query) {
 		HttpHeaders httpHeaders = new HttpHeaders();
 		
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		
 		if(!entitlementCacheProvider.containsKey(userId))
         {
         	return new ResponseEntity<>(null, httpHeaders, HttpStatus.OK);
@@ -63,9 +66,19 @@ public class EntitlementsController {
         
     	Object queryResult = jsonContext.read(query);
     	
-    	String dataString = queryResult.toString();
+    	ObjectMapper mapper = new ObjectMapper();
+    	
+    	String jsonResult = null;
+    	
+    	try {
+			jsonResult= mapper.writeValueAsString(queryResult);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
         
-    	return new ResponseEntity<>(dataString, httpHeaders, HttpStatus.OK);
+    	return new ResponseEntity<>(jsonResult, httpHeaders, HttpStatus.OK);
     }
     
     @RequestMapping(method = RequestMethod.POST)
