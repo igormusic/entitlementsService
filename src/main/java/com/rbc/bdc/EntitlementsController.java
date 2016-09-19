@@ -22,6 +22,8 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
+import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 
 
 @RestController
@@ -44,25 +46,26 @@ public class EntitlementsController {
         	return new ResponseEntity<>(null, httpHeaders, HttpStatus.OK);
         }
 		
-        Object entitlements = entitlementCacheProvider.get(userId);
+        String entitlements = entitlementCacheProvider.get(userId);
         
         if(query==null)
         {
         	return new ResponseEntity<>(entitlements, httpHeaders, HttpStatus.OK);
         }
         
-        Configuration pathConfiguration = 
-        		Configuration.
-        			builder().
-        				options(Option.ALWAYS_RETURN_LIST).
-        				build().
-        				addOptions(Option.SUPPRESS_EXCEPTIONS);
+        Configuration pathConfiguration = Configuration
+									        .builder()
+									        .mappingProvider(new JacksonMappingProvider())
+									        .jsonProvider(new JacksonJsonProvider())
+									        .build();
         
         DocumentContext jsonContext = JsonPath.using(pathConfiguration).parse(entitlements);
         
     	Object queryResult = jsonContext.read(query);
+    	
+    	String dataString = queryResult.toString();
         
-    	return new ResponseEntity<>(queryResult, httpHeaders, HttpStatus.OK);
+    	return new ResponseEntity<>(dataString, httpHeaders, HttpStatus.OK);
     }
     
     @RequestMapping(method = RequestMethod.POST)
