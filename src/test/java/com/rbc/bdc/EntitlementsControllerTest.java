@@ -1,6 +1,7 @@
 package com.rbc.bdc;
 
 
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,14 +98,27 @@ public class EntitlementsControllerTest {
     }
     
     @Test
-    public void readSingleBookmark() throws Exception {
-        mockMvc.perform(get("/entitlements").param("userId","user1")
+    public void getEntitlementsForOperationAndPermission() throws Exception {
+        mockMvc.perform(get("/entitlements")
+        		.param("userId","user1")
         		.param("q", "$.[?(@.operation == 'ca.transfer.account' && @.permission == 'read')].['data']"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-                .andExpect(jsonPath("$", hasSize(1)));
-               
-                            
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(content().string("[[\"account1\",\"account2\",\"account3\",\"account4\"]]"));
+                             
+    }
+    
+    @Test
+    public void getEntitlementsForOperationRegExAndPermission() throws Exception {
+        mockMvc.perform(get("/entitlements")
+        		.param("userId","user1")
+        		.param("q", "$.[?(@.operation  =~ /ca.\\w*.account/ && @.permission == 'read')].['data']"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().string("[[\"account1\",\"account2\",\"account3\",\"account4\"],[\"account4\",\"account5\",\"account6\",\"account7\"]]"));
+                             
     }
 
 

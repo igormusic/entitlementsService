@@ -12,9 +12,9 @@ import org.junit.Test;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
-public class SimplePermissionTest {
+public class ExtendedPermissionTest {
 	
-	InputStream jsonInputStream = this.getClass().getClassLoader().getResourceAsStream("simple_permissions.json");
+	InputStream jsonInputStream = this.getClass().getClassLoader().getResourceAsStream("extended_data_permissions.json");
 	String jsonString = new Scanner(jsonInputStream, "UTF-8").useDelimiter("\\Z").next();
 
 	@Test
@@ -34,7 +34,7 @@ public class SimplePermissionTest {
 		 
 	     String dataString = accountList.toString();
 		
-	     assertEquals("[[\"account1\",\"account2\",\"account3\",\"account4\"]]", dataString);
+	     assertEquals("[[{\"account\":\"account1\",\"bank\":\"bank1\",\"branch\":\"branch1\"},{\"account\":\"account2\",\"bank\":\"bank2\",\"branch\":\"branch2\"},{\"account\":\"account3\",\"bank\":\"bank3\",\"branch\":\"branch3\"},{\"account\":\"account4\",\"bank\":\"bank4\",\"branch\":\"branch4\"}]]", dataString);
 	}
 	
 	@Test
@@ -45,16 +45,16 @@ public class SimplePermissionTest {
 		 
 	     String dataString = accountList.toString();
 		
-	     assertEquals("[[\"account1\",\"account2\",\"account3\",\"account4\"],[\"account4\",\"account5\",\"account6\",\"account7\"]]", dataString);
+	     assertEquals("[[{\"account\":\"account1\",\"bank\":\"bank1\",\"branch\":\"branch1\"},{\"account\":\"account2\",\"bank\":\"bank2\",\"branch\":\"branch2\"},{\"account\":\"account3\",\"bank\":\"bank3\",\"branch\":\"branch3\"},{\"account\":\"account4\",\"bank\":\"bank4\",\"branch\":\"branch4\"}],[{\"account\":\"account4\",\"bank\":\"bank4\",\"branch\":\"branch4\"},{\"account\":\"account5\",\"bank\":\"bank5\",\"branch\":\"branch5\"},{\"account\":\"account6\",\"bank\":\"bank6\",\"branch\":\"branch6\"},{\"account\":\"account7\",\"bank\":\"bank7\",\"branch\":\"branch7\"}]]", dataString);
 	}
 	
 
 	@Test
-
+	@Ignore
 	public void givenAccountList_whenLookingUppermissions_thenSucceed(){
 		 DocumentContext context= JsonPath.parse(jsonString);
 		
-		 Object accountList = context.read("$[?('account4' in @['data'])]");
+		 Object accountList = context.read("$[?('account4' in @['data'].['account'])]");
 		 
 	     String dataString = accountList.toString();
 		
