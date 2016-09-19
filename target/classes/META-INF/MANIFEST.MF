@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Implementation-Title: entitlementService
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: Jelena.Bozic
+Built-By: igorm_000
 Implementation-Vendor-Id: com.rbc.bdc
-Build-Jdk: 1.8.0_77
+Build-Jdk: 1.8.0_102
 Implementation-URL: http://projects.spring.io/spring-boot/entitlementS
  ervice/
 Created-By: Maven Integration for Eclipse
